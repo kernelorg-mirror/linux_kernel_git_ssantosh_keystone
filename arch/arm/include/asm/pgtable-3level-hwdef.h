@@ -44,7 +44,11 @@
 #define PMD_SECT_CACHEABLE	(_AT(pmdval_t, 1) << 3)
 #define PMD_SECT_USER		(_AT(pmdval_t, 1) << 6)		/* AP[1] */
 #define PMD_SECT_RDONLY		(_AT(pmdval_t, 1) << 7)		/* AP[2] */
+#ifdef CONFIG_KEYSTONE2_DMA_COHERENT
+#define PMD_SECT_S		(_AT(pmdval_t, 2) << 8)
+#else
 #define PMD_SECT_S		(_AT(pmdval_t, 3) << 8)
+#endif
 #define PMD_SECT_AF		(_AT(pmdval_t, 1) << 10)
 #define PMD_SECT_nG		(_AT(pmdval_t, 1) << 11)
 #define PMD_SECT_PXN		(_AT(pmdval_t, 1) << 53)
@@ -72,7 +76,11 @@
 #define PTE_TABLE_BIT		(_AT(pteval_t, 1) << 1)
 #define PTE_BUFFERABLE		(_AT(pteval_t, 1) << 2)		/* AttrIndx[0] */
 #define PTE_CACHEABLE		(_AT(pteval_t, 1) << 3)		/* AttrIndx[1] */
+#ifdef CONFIG_KEYSTONE2_DMA_COHERENT
+#define PTE_EXT_SHARED		(_AT(pteval_t, 2) << 8)		/* SH[1:0], inner shareable */
+#else
 #define PTE_EXT_SHARED		(_AT(pteval_t, 3) << 8)		/* SH[1:0], inner shareable */
+#endif
 #define PTE_EXT_AF		(_AT(pteval_t, 1) << 10)	/* Access Flag */
 #define PTE_EXT_NG		(_AT(pteval_t, 1) << 11)	/* nG */
 #define PTE_EXT_XN		(_AT(pteval_t, 1) << 54)	/* XN */
