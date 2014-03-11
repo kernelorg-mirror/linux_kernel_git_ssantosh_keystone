@@ -133,6 +133,11 @@
 			interrupts = <GIC_SPI 289 IRQ_TYPE_EDGE_RISING>;
 			#address-cells = <1>;
 			#size-cells = <0>;
+
+			pca@20 {
+				compatible = "nxp,pca9555";
+				reg = <0x20>;
+			};
 		};
 
 		spi0: spi@21000400 {
@@ -266,5 +271,6 @@
 			ranges = <0 0 0x30000000 0x10000000
 				  1 0 0x21000A00 0x00000100>;
 		};
+
 	};
 };
