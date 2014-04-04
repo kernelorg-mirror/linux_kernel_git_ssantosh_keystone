@@ -11,6 +11,7 @@
 
 #include "keystone.dtsi"
 #include "k2hk.dtsi"
+#include "k2-rtm-boc-board.dtsi"
 
 / {
 	compatible =  "ti,k2hk-evm","ti,keystone";
@@ -300,23 +301,6 @@
 					local-mac-address = [02 18 31 7e 3e 6f];
 					netcp-gbe = <&gbe1>;
 				};
-			};
-		};
-
-		mdiox0: mdiox {
-			compatible = "virtual,mdio-gpio";
-			#address-cells = <1>;
-			#size-cells = <0>;
-			gpios = <&gpio0 2 0x2		/* mdc */
-				 &gpio0 0 0x2>;		/* mdio */
-
-			phyx0: phyx@0 {
-				compatible = "Marvell,88x2242", "ethernet-phy-ieee802.3-c45";
-				reg = <0>;
-			};
-			phyx1: phyx@1 {
-				compatible = "Marvell,88x2242", "ethernet-phy-ieee802.3-c45";
-				reg = <1>;
 			};
 		};
 
