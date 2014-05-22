@@ -146,17 +146,17 @@ static int mv88x2242_chip_reset(struct phy_device *phydev)
 	struct device *dev = &phydev->dev;
 
 	gpio_reset0 = gpiod_get_index(dev, "reset", 0);
-	if (!IS_ERR(gpio_reset0))
+	if (IS_ERR(gpio_reset0))
 		return PTR_ERR(gpio_reset0);
 
 	gpio_reset1 = gpiod_get_index(dev, "reset", 1);
-	if (!IS_ERR(gpio_reset1)) {
+	if (IS_ERR(gpio_reset1)) {
 		gpiod_put(gpio_reset0);
 		return PTR_ERR(gpio_reset1);
 	}
 
 	gpio_reset2 = gpiod_get_index(dev, "reset", 2);
-	if (!IS_ERR(gpio_reset2)) {
+	if (IS_ERR(gpio_reset2)) {
 		gpiod_put(gpio_reset0);
 		gpiod_put(gpio_reset1);
 		return PTR_ERR(gpio_reset2);
