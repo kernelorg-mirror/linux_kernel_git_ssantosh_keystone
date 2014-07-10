@@ -79,7 +79,7 @@
 					      <0x2a06000 0x400>,
 					      <0x2a02000 0x1000>,
 					      <0x2a03000 0x1000>,
-					      <0x2a80000 0x20000>,
+					      <0x23a80000 0x20000>,
 					      <0x2a80000 0x20000>;
 					reg-names = "peek", "status", "config",
 						    "region", "push", "pop";
@@ -91,7 +91,7 @@
 					      <0x2a06400 0x400>,
 					      <0x2a04000 0x1000>,
 					      <0x2a05000 0x1000>,
-					      <0x2aa0000 0x20000>,
+					      <0x23aa0000 0x20000>,
 					      <0x2aa0000 0x20000>;
 					reg-names = "peek", "status", "config",
 						    "region", "push", "pop";
@@ -100,23 +100,23 @@
 			queue-pools {
 				qpend {
 					qpend-0 {
-						values = <658 8>;
+						qrange = <658 8>;
 						interrupts =<0 40 0xf04 0 41 0xf04 0 42 0xf04
 							     0 43 0xf04 0 44 0xf04 0 45 0xf04
 							     0 46 0xf04 0 47 0xf04>;
 					};
 					qpend-1 {
-						values = <8704 16>;
+						qrange = <8704 16>;
 						interrupts = <0 48 0xf04 0 49 0xf04 0 50 0xf04
 							      0 51 0xf04 0 52 0xf04 0 53 0xf04
 							      0 54 0xf04 0 55 0xf04 0 56 0xf04
 							      0 57 0xf04 0 58 0xf04 0 59 0xf04
 							      0 60 0xf04 0 61 0xf04 0 62 0xf04
 							      0 63 0xf04>;
-						reserved;
+						qalloc-by-id;
 					};
 					qpend-2 {
-						values = <8720 16>;
+						qrange = <8720 16>;
 						interrupts = <0 64 0xf04 0 65 0xf04 0 66 0xf04
 							      0 59 0xf04 0 68 0xf04 0 69 0xf04
 							      0 70 0xf04 0 71 0xf04 0 72 0xf04
@@ -127,39 +127,39 @@
 				};
 				general-purpose {
 					gp-0 {
-						values = <4000 64>;
+						qrange = <4000 64>;
 					};
 					netcp-tx {
-						values = <640 9>;
-						reserved;
+						qrange = <640 9>;
+						qalloc-by-id;
 					};
 					netcpx-tx {
-						values = <8752 8>;
-						reserved;
+						qrange = <8752 8>;
+						qalloc-by-id;
 					};
 				};
 				accumulator {
 					acc-0 {
-						values = <128 32>;
+						qrange = <128 32>;
 						accumulator = <0 36 16 2 50>;
 						interrupts = <0 215 0xf01>;
 						multi-queue;
-						reserved;
+						qalloc-by-id;
 					};
 					acc-1 {
-						values = <160 32>;
+						qrange = <160 32>;
 						accumulator = <0 37 16 2 50>;
 						interrupts = <0 216 0xf01>;
 						multi-queue;
 					};
 					acc-2 {
-						values = <192 32>;
+						qrange = <192 32>;
 						accumulator = <0 38 16 2 50>;
 						interrupts = <0 217 0xf01>;
 						multi-queue;
 					};
 					acc-3 {
-						values = <224 32>;
+						qrange = <224 32>;
 						accumulator = <0 39 16 2 50>;
 						interrupts = <0 218 0xf01>;
 						multi-queue;
@@ -172,7 +172,7 @@
 				ranges;
 				region-12 {
 					id = <12>;
-					values	= <8192 128>;	/* num_desc desc_size */
+					region-spec = <8192 128>;	/* num_desc desc_size */
 					link-index = <0x4000>;
 				};
 			};
@@ -198,9 +198,10 @@
 			#address-cells = <1>;
 			#size-cells = <1>;
 			ranges;
+			ti,navigator-cloud-address = <0x23a80000 0x23a90000
+						   0x23aa0000 0x23ab0000>;
 
-			dma_gbe {
-				dma-id = <0>;
+			dma_gbe: dma_gbe@0 {
 				reg = <0x2004000 0x100>,
 					  <0x2004400 0x120>,
 					  <0x2004800 0x300>,
@@ -208,13 +209,9 @@
 					  <0x2005000 0x400>;
 				reg-names = "global", "txchan", "rxchan",
 						"txsched", "rxflow";
-
-				qm-base-address = <0x23a80000 0x23a90000
-						   0x23aa0000 0x23ab0000>;
 			};
 
-			dma_xgbe {
-				dma-id = <1>;
+			dma_xgbe: dma_xgbe@0 {
 				reg = <0x2fa1000 0x100>,
 					<0x2fa1400 0x200>,
 					<0x2fa1800 0x200>,
@@ -222,9 +219,6 @@
 					<0x2fa2000 0x400>;
 				reg-names = "global", "txchan", "rxchan",
 						"txsched", "rxflow";
-
-				qm-base-address = <0x23a80000 0x23a90000
-						   0x23aa0000 0x23ab0000>;
 			};
 		};
 
@@ -239,7 +233,11 @@
 			clocks = <&papllclk>, <&clkcpgmac>, <&chipclk12>;
 			dma-coherent;
 			/* big-endian; */
-			dma-id = <0>;
+
+			ti,navigator-dmas = <&dma_gbe 22>,
+					<&dma_gbe 23>,
+					<&dma_gbe 8>;
+			ti,navigator-dma-names = "netrx0", "netrx1", "nettx";
 
 			netcp-devices {
 				#address-cells = <1>;
@@ -250,7 +248,7 @@
 					reg = <0x2090000 0xf00>;
 					/* enable-ale; */
 					tx-queue = <648>;
-					tx-channel = <8>;
+					tx-channel = "nettx";
 
 					interfaces {
 						gbe0: interface-0 {
@@ -278,7 +276,7 @@
 
 			netcp-interfaces {
 				interface-0 {
-					rx-channel = <22>;
+					rx-channel = "netrx0";
 					rx-pool = <1024 12>;
 					tx-pool = <1024 12>;
 					rx-queue-depth = <128 128 0 0>;
@@ -290,7 +288,7 @@
 
 				};
 				interface-1 {
-					rx-channel = <23>;
+					rx-channel = "netrx1";
 					rx-pool = <1024 12>;
 					tx-pool = <1024 12>;
 					rx-queue-depth = <128 128 0 0>;
@@ -314,7 +312,11 @@
 			clock-names = "clk_xge";
 			dma-coherent;
 			/* big-endian; */
-			dma-id = <1>;
+
+			ti,navigator-dmas = <&dma_xgbe 0>,
+					<&dma_xgbe 8>,
+					<&dma_xgbe 0>;
+			ti,navigator-dma-names = "xnetrx0", "xnetrx1", "xnettx";
 
 			netcp-devices {
 				#address-cells = <1>;
@@ -326,7 +328,7 @@
 						<0x0231e000 0x2000>;
 					/* enable-ale; */
 					tx-queue = <8752>;
-					tx-channel = <0>; /* Tx ch 0 tied to queue 8752 */
+					tx-channel = "xnettx";
 
 					interfaces {
 						xgbe0: interface-0 {
@@ -345,7 +347,7 @@
 
 			netcp-interfaces {
 				interface-0 {
-					rx-channel = <0>;
+					rx-channel = "xnetrx0";
 					rx-pool = <1024 12>; /* num_desc region-id */
 					tx-pool = <1024 12>; /* num_desc region-id */
 					rx-queue-depth = <960 64 0 0>;
@@ -357,7 +359,7 @@
 
 				};
 				interface-1 {
-					rx-channel = <8>;
+					rx-channel = "xnetrx1";
 					rx-pool = <1024 12>; /* num_desc region-id */
 					tx-pool = <1024 12>; /* num_desc region-id */
 					rx-queue-depth = <960 64 0 0>;
