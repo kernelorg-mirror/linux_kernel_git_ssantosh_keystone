@@ -171,8 +171,8 @@ static int mv88x2242_chip_reset(struct phy_device *phydev)
 	msleep(msec);
 
 	gpiod_set_value_cansleep(gpio_reset0, 1);
-	gpiod_set_value_cansleep(gpio_reset1, 0);
-	gpiod_set_value_cansleep(gpio_reset2, 0);
+	gpiod_set_value_cansleep(gpio_reset1, 1);
+	gpiod_set_value_cansleep(gpio_reset2, 1);
 
 err:
 	gpiod_put(gpio_reset0);
